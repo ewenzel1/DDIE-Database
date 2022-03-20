@@ -5,14 +5,21 @@
       <p>The following are a working list of suggested resources compiled by the Division of Diverse and<br>
       Inclusive Excellence for publicizing available openings at KSU.</p>
     </div>
-
-    <div id="main-container">
+    <input 
+      type="text"
+      v-model="currentInput"
+      @input="updatePage()"
+    >
+    <div id="main-container" v-if="hasContent">
       <div v-for="(section, index) in sections" :key="index">
         <h3>{{section.header}}</h3>
         <div class="long">
           <a v-for="(link, name, index) in section.links" target="_blank" :href="link" :key="index">{{name}}</a>
         </div>
       </div>
+    </div>
+    <div v-else>
+      <p>There is no content that matches that search</p>
     </div>
   </div>
 </template>
@@ -33,8 +40,9 @@ export default {
       mathScience: [],
       nursing: [],
       studentAffairs: [],
-      sections: []
-      
+      sections: [],
+      currentInput: '',
+      hasContent: true
     }
   },
   mounted() {
@@ -48,20 +56,29 @@ export default {
       await LINKS.get().then(querySnapshot => {
         querySnapshot.forEach(doc => {
           const data = doc.data();
+          const arr = Object.entries(data);
+          const filteredArr = arr.filter(([key]) => key.toUpperCase().includes(this.currentInput.toUpperCase()))
+          const filteredData = Object.fromEntries(filteredArr)
           docIDs.push(doc.id);
-          linksFromDatabase.push(data);
+          linksFromDatabase.push(filteredData);
+          
         })
       })
       this.links = linksFromDatabase;
       for (var i = 0; i < this.links.length; i++) {
-        sectionsOfWebpage.push({
-          header: docIDs[i],
-          links: this.links[i]
-        })
+        if (!Object.keys(this.links[i]).length == 0) {
+          sectionsOfWebpage.push({
+            header: docIDs[i],
+            links: this.links[i]
+          })
+        }
       }
-      console.log(sectionsOfWebpage);
+      Object.keys(sectionsOfWebpage).length == 0 ? this.hasContent = false : this.hasContent = true;
       this.sections = sectionsOfWebpage;
     },
+    updatePage() {
+      this.getHrefs()
+    }
   }
 }
 </script>
