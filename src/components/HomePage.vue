@@ -90,17 +90,18 @@ export default {
   grid-template-columns: 1fr 1fr 1fr;
 
   grid-template-rows: 1fr 1fr 1fr;
-  gap: 20px;
+  gap: 10%;
   height: calc(100vh - 10px);
 }
 a {
     display: block;
     padding-bottom: 5px;
     text-decoration: none;
+    color: #00708d;
 }
 
 a:hover{
-  color: pink;
+  color: #febc11;
 }
 
 .long {
@@ -108,4 +109,13 @@ a:hover{
   overflow-y: scroll;
   height: 30%;
 }
+
+p {
+  font-family: 'Nunito';
+  color: #000;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 130%;
+}
+
 </style>
